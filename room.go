@@ -80,7 +80,6 @@ func NewRoom(u string) (*Room, error) {
 		Url:    u,
 		Ttwid:  ttwid,
 		RoomId: liveRoomId,
-		MsgQ:   msgQ,
 	}, nil
 }
 
