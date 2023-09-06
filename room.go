@@ -3,20 +3,16 @@ package main
 import (
 	"bytes"
 	"compress/gzip"
-	"fmt"
 	"io"
 	"log"
 	"net/http"
-	"net/url"
 	"regexp"
 	"strings"
 	"time"
 
+	dyproto "github.com/XiaoMiku01/douyin-live-go/protobuf"
 	"github.com/golang/protobuf/proto"
 	"github.com/gorilla/websocket"
-	"github.com/tidwall/gjson"
-
-	dyproto "github.com/XiaoMiku01/douyin-live-go/protobuf"
 )
 
 type Room struct {
