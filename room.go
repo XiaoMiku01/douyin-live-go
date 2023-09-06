@@ -69,33 +69,19 @@ func NewRoom(u string) (*Room, error) {
 		return nil, err
 	}
 	resText := string(body)
-	re := regexp.MustCompile(`<script id="RENDER_DATA" type="application/json">(.*?)</script>`)
+	re := regexp.MustCompile(`roomId\\":\\"(\d+)\\"`)
 	match := re.FindStringSubmatch(resText)
 	if match == nil || len(match) < 2 {
 		log.Println("No match found")
 		return nil, err
 	}
-	resText = match[1]
-	resText, err = url.QueryUnescape(resText)
-	if err != nil {
-		log.Println(err)
-		return nil, err
-	}
-	appJson := gjson.Get(resText, "app").String()
-	initialStateJson := gjson.Get(appJson, "initialState").String()
-	roomStoreJson := gjson.Get(initialStateJson, "roomStore").String()
-	liveRoomId := gjson.Get(roomStoreJson, "roomInfo.roomId").String()
-	liveRoomTitle := gjson.Get(roomStoreJson, "roomInfo.room.title").String()
-	if u != "" && roomStoreJson != "" && liveRoomId != "" && liveRoomTitle != "" {
-		return &Room{
-			Url:       u,
-			Ttwid:     ttwid,
-			RoomStore: roomStoreJson,
-			RoomId:    liveRoomId,
-			RoomTitle: liveRoomTitle,
-		}, nil
-	}
-	return nil, fmt.Errorf("房间初始化失败！")
+	liveRoomId := match[1]
+	return &Room{
+		Url:    u,
+		Ttwid:  ttwid,
+		RoomId: liveRoomId,
+		MsgQ:   msgQ,
+	}, nil
 }
 
 func (r *Room) Connect() error {
